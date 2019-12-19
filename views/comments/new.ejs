@@ -1,0 +1,23 @@
+<%- include ("../partials/header") %>
+<h1>BIKE CAMP - Post new comments</h1>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align: center;">Create a new Comment for <%=biketrail.name%></h1>
+        <div style="width: 30%; margin: 25px auto;">
+            <form action="/biketrails/<%= biketrail._id %>/comments" method="post">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="comment[author]" placeholder="Author" id="">
+                </div> 
+                <div class="form-group">
+                    <input class="form-control" type="text" name="comment[text]"  placeholder="Text" id="">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary btn-block" >Create</button>
+                </div>
+            </form>
+            <a href="/biketrail/<%= biketrail._id %>">Back</a>
+        </div>
+    </div>
+</div>
+<a href="/biketrails">View all Biketrails</a>
+<%- include ("../partials/footer") %>

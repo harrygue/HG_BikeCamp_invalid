@@ -1,0 +1,21 @@
+<%- include ("../partials/header") %>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align: center;">Create a new Campground</h1>
+        <div style="width: 30%; margin: 25px auto;">
+            <form action="/biketrails" method="post">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="name" placeholder="Name" id="">
+                </div> 
+                <div class="form-group">
+                    <input class="form-control" type="text" name="description" placeholder="Description" id="">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary btn-block" >Create</button>
+                </div>
+            </form>
+            <a href="/biketrails">Back</a>
+        </div>
+    </div>
+</div>
+<%- include ("../partials/footer") %>
