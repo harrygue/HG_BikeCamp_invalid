@@ -1,0 +1,21 @@
+<%- include ("../partials/header") %>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align: center;">Update Biketrail <%= biketrail.name%></h1>
+        <div style="width: 30%; margin: 25px auto;">
+            <form action="/biketrails/<%= biketrail._id %>/?_method=PUT" method="post">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="biketrail[name]" value="<%=biketrail.name %>">
+                </div> 
+                <div class="form-group">
+                    <input class="form-control" type="text" name="biketrail[description]" value="<%=biketrail.description %>">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary btn-block" >Update</button>
+                </div>
+            </form>
+            <a href="/biketrails">Back</a>
+        </div>
+    </div>
+</div>
+<%- include ("../partials/footer") %>

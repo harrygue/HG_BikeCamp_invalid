@@ -14,20 +14,28 @@ div class="container">
                 <% biketrail.images.map((image) => { %>
                     <img class="image-responsive" src = '<%= image.url %>' alt="">
                     <p><%= image.location%></p>
+                    <form style="margin: 3px;" action="/biketrails/<%=biketrail._id%>/images/<%=image._id%>/?_method=DELETE" method="post">
+                        <button class="btn btn-sm btn-danger">Delete Image</button>
+                    </form style="display: inline;">
                 <% })%>
                 <div class="caption-full">
-                    <h4 class="pull-right">BlaBlaBla</h4>
+                    <h4 class="pull-right">Placeholder for content</h4>
                     <h4><a href=""><%= biketrail.name%></a></h4>
                     <p><%= biketrail.description%></p>
+                    <!-- add author later -->
+
+                    <a class="btn btn-sm btn-success text-left"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images/new">Add New Image</a>
+                    <a class="btn btn-warning btn-sm" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/edit">Edit Biketrail</a>
+                    <form style="display: inline;" action="/biketrails/<%= biketrail._id%>/?_method=DELETE" method="POST">
+                        <button class="btn btn-danger btn-sm">Delete Biketrail</button>
+                    </form>
                 </div>
             </div>
             <div class="well">
                 <div class="text-right">
                     <a class="btn btn-success" href="/biketrails/<%= biketrail._id %>/comments/new">Create New Comment</a>
                 </div>
-                <div class="text-left">
-                    <a class="btn btn-success" href="/biketrails/<%= biketrail._id %>/images/new">Upload New Image</a>
-                </div>
+ 
                 <hr>
                 <% biketrail.comments.map((comment) => { %>
                     <div class="row">
@@ -35,6 +43,11 @@ div class="container">
                             <strong><%= comment.author%></strong>
                             <span class="pull-right">10 days ago</span>
                             <p><%=comment.text%></p>
+                            <p></p>
+                            <a class="btn btn-warning" href="/biketrails/<%= biketrail._id%>/comments/<%= comment._id%>/edit">Edit</a>
+                            <form style="display: inline;" action="/biketrails/<%= biketrail._id%>/comments/<%=comment._id%>/?_method=DELETE" method="post">
+                                <button class="btn btn-danger">Delete Comment</button>
+                            </form>
                         </div>
                     </div>
                 <% });%>
