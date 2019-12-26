@@ -4,6 +4,7 @@ const passport = require("passport");
 const Biketrail = require("../models/biketrail");
 const Comment = require("../models/comment");
 const Image = require("../models/image");
+const middleware = require("../middleware/index");
 
 // Index page
 router.get("/",(req,res) => {
@@ -20,12 +21,13 @@ router.get("/",(req,res) => {
     });
 });
 
-router.post("/",isLoggedIn,(req,res) => {
+router.post("/",middleware.isLoggedIn,(req,res) => {
     // let newBiketrail = {
     //     name:req.body.name,
     //     description:req.body.description,
     // }
     let newBiketrail = req.body.biketrail;
+    newBiketrail.author = {id:req.user._id,userName:req.user.username};
     // create new biketrail and save to db
     Biketrail.create(newBiketrail,(err,newlyCreated) => {
         if(err){
@@ -38,7 +40,7 @@ router.post("/",isLoggedIn,(req,res) => {
 });
 
 // show new biketrail form
-router.get("/new",isLoggedIn,(req,res) => {
+router.get("/new",middleware.isLoggedIn,(req,res) => {
     res.render("biketrails/new");
 });
 
@@ -55,7 +57,7 @@ router.get("/:id",(req,res) => {
 });
 
 // Edit Biketrail
-router.get("/:id/edit",(req,res) => {
+router.get("/:id/edit",middleware.checkBiketrailOwnership,(req,res) => {
     console.log("hit edit route");
     Biketrail.findById(req.params.id,(err,foundBiketrail) => {
         console.log("found Biketrail: ",foundBiketrail);
@@ -63,8 +65,8 @@ router.get("/:id/edit",(req,res) => {
     });
 })
 
-// UPATE BIKETRAIL
-router.put("/:id",(req,res) => {
+// UPATE BIKETRAIL  
+router.put("/:id",middleware.checkBiketrailOwnership,(req,res) => {
     let updatedBiketrail = req.body.biketrail;
     console.log(updatedBiketrail);
     Biketrail.findByIdAndUpdate(req.params.id,updatedBiketrail,(err,biketrail) => {
@@ -79,7 +81,7 @@ router.put("/:id",(req,res) => {
 });
 
 // Destroy Biketrail
-router.delete("/:id",(req,res) => {
+router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
     // res.send("hit delete route");
     Biketrail.findByIdAndDelete(req.params.id,(err,biketrail) => {
         if(err){
@@ -112,13 +114,13 @@ router.delete("/:id",(req,res) => {
 });
 
 // middleware to test if user is logged in otherwise he can go to secret page via search line
-function isLoggedIn(req,res,next){
-    console.log("isLoggedIn called!");
-    if(req.isAuthenticated()){
-        console.log("user " + req.body.username + " is authenicated!")
-        return next();
-    }
-    res.redirect("/login");
-}
+// function isLoggedIn(req,res,next){
+//     console.log("isLoggedIn called!");
+//     if(req.isAuthenticated()){
+//         console.log("user " + req.body.username + " is authenicated!")
+//         return next();
+//     }
+//     res.redirect("/login");
+// }
 
 module.exports = router;

@@ -3,9 +3,10 @@ const router = express.Router({mergeParams:true});
 const passport = require("passport");
 const Biketrail = require("../models/biketrail");
 const Image = require("../models/image");
+const middleware = require("../middleware");
 
 // Image - New Form
-router.get("/new",isLoggedIn,(req,res) => {
+router.get("/new",middleware.checkBiketrailOwnership,(req,res) => {
     Biketrail.findById(req.params.id,(err,biketrail) => {
         if(err){
             console.log("Error in Image new Form - find Biketrail",err);
@@ -18,7 +19,7 @@ router.get("/new",isLoggedIn,(req,res) => {
 });
 
 // Image - create
-router.post("/",isLoggedIn,(req,res) => {
+router.post("/",middleware.checkBiketrailOwnership,(req,res) => {
     let newImage = req.body.image;
     console.log("newImage: ",newImage);
     Biketrail.findById(req.params.id,(err,foundBiketrail) => {
@@ -42,7 +43,7 @@ router.post("/",isLoggedIn,(req,res) => {
 });
 
 // Destroy Image
-router.delete("/:image_id",(req,res) => {
+router.delete("/:image_id",middleware.checkBiketrailOwnership,(req,res) => {
     console.log("hit delete route");
     Image.findByIdAndDelete(req.params.image_id,(err) => {
         if(err){
@@ -55,13 +56,13 @@ router.delete("/:image_id",(req,res) => {
 })
 
 // middleware to test if user is logged in otherwise he can go to secret page via search line
-function isLoggedIn(req,res,next){
-    console.log("isLoggedIn called!");
-    if(req.isAuthenticated()){
-        console.log("user " + req.body.username + " is authenicated!")
-        return next();
-    }
-    res.redirect("/login");
-}
+// function isLoggedIn(req,res,next){
+//     console.log("isLoggedIn called!");
+//     if(req.isAuthenticated()){
+//         console.log("user " + req.body.username + " is authenicated!")
+//         return next();
+//     }
+//     res.redirect("/login");
+// }
 
 module.exports = router;

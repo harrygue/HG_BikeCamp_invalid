@@ -40,7 +40,7 @@ div class="container">
                 <% biketrail.comments.map((comment) => { %>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong><%= comment.author%></strong>
+                            <strong><%= comment.author.userName%></strong>
                             <span class="pull-right">10 days ago</span>
                             <p><%=comment.text%></p>
                             <p></p>

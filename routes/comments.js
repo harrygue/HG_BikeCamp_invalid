@@ -3,10 +3,11 @@ const router = express.Router({mergeParams:true});
 const passport = require("passport");
 const Biketrail = require("../models/biketrail");
 const Comment = require("../models/comment");
+const middleware = require("../middleware");
 
 // Comments - New Form
 
-router.get("/new",isLoggedIn,(req,res) => {
+router.get("/new",middleware.isLoggedIn,(req,res) => {
     Biketrail.findById(req.params.id,(err,biketrail) => {
         if(err){
             console.log("Error at new comments:",err);
@@ -16,8 +17,9 @@ router.get("/new",isLoggedIn,(req,res) => {
     });
 });
 
-router.post("/",isLoggedIn,(req,res) => {
+router.post("/",middleware.isLoggedIn,(req,res) => {
     let newComment = req.body.comment;
+    newComment.author = {id:req.user._id,userName:req.user.username};
     Biketrail.findById(req.params.id,(err,foundBiketrail) => {
         if(err){
             console.log("Error at post new comment route in find biketrail: ",err);
@@ -40,7 +42,7 @@ router.post("/",isLoggedIn,(req,res) => {
 });
 
 // Edit comment - get
-router.get("/:comment_id/edit",(req,res) => {
+router.get("/:comment_id/edit",middleware.checkCommentOwnership,(req,res) => {
     // console.log(req);
     console.log(req.params.id);
     console.log(req.params.comment_id);
@@ -56,7 +58,7 @@ router.get("/:comment_id/edit",(req,res) => {
 });
 
 // Update comment - put
-router.put("/:comment_id",(req,res) => {
+router.put("/:comment_id",middleware.checkCommentOwnership,(req,res) => {
     console.log("hit update route");
     let updatedComment = req.body.comment;
     Comment.findByIdAndUpdate(req.params.comment_id,updatedComment,(err,comment) => {
@@ -70,7 +72,7 @@ router.put("/:comment_id",(req,res) => {
 });
 
 // Delete comment - delete
-router.delete("/:comment_id",(req,res) => {
+router.delete("/:comment_id",middleware.checkCommentOwnership,(req,res) => {
     console.log("hit delete route");
     Comment.findByIdAndDelete(req.params.comment_id,(err) => {
         if(err){
@@ -83,13 +85,13 @@ router.delete("/:comment_id",(req,res) => {
 })
 
 // middleware to test if user is logged in otherwise he can go to secret page via search line
-function isLoggedIn(req,res,next){
-    console.log("isLoggedIn called!");
-    if(req.isAuthenticated()){
-        console.log("user " + req.body.username + " is authenicated!")
-        return next();
-    }
-    res.redirect("/login");
-}
+// function isLoggedIn(req,res,next){
+//     console.log("isLoggedIn called!");
+//     if(req.isAuthenticated()){
+//         console.log("user " + req.body.username + " is authenicated!")
+//         return next();
+//     }
+//     res.redirect("/login");
+// }
 
 module.exports = router;
