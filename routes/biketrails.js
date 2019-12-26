@@ -39,19 +39,22 @@ router.post("/",middleware.isLoggedIn,(req,res) => {
     });
 });
 
-// show new biketrail form
+// NEW biketrail form
 router.get("/new",middleware.isLoggedIn,(req,res) => {
     res.render("biketrails/new");
 });
 
-// Show selected Biketrail
+// SHOW Biketrail form
 router.get("/:id",(req,res) => {
     Biketrail.findById(req.params.id).populate("comments").populate("images").exec((err,foundBiketrail) => {
         if(err){
             console.log("Error at show: ",err);
         } else {
             console.log(foundBiketrail);
-            res.render("biketrails/show",{biketrail:foundBiketrail});
+            if(req.isAuthenticated()){
+                res.render("biketrails/show",{biketrail:foundBiketrail,user_id:req.user._id});
+            }
+            res.render("biketrails/show",{biketrail:foundBiketrail,user_id:undefined});
         }
     });
 });
