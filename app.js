@@ -15,7 +15,16 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const flash = require("connect-flash");
 
 // connect do DB
-mongoose.connect("mongodb://localhost/bike_camp",{useNewUrlParser:true,useUnifiedTopology: true});
+const connectionString = process.env.DATABASEURL;
+// mongoose.connect("mongodb://localhost/bike_camp",{useNewUrlParser:true,useUnifiedTopology: true});
+mongoose.connect(connectionString || "mongodb://localhost/bike_camp",{
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    useCreateIndex:true}).then(() => {
+        console.log("connected to DB!");
+    }).catch(err => {
+        console.log("ERROR:",err.message);
+    });
 
 app.use(bodyParser.urlencoded({extended:true}))
 app.set("view engine","ejs");
