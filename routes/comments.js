@@ -11,6 +11,7 @@ router.get("/new",middleware.isLoggedIn,(req,res) => {
     Biketrail.findById(req.params.id,(err,biketrail) => {
         if(err){
             console.log("Error at new comments:",err);
+            req.flash("error",err);
         } else {
             res.render("comments/new",{biketrail:biketrail});
         }
@@ -28,11 +29,13 @@ router.post("/",middleware.isLoggedIn,(req,res) => {
             Comment.create(newComment,(err,comment) => {
                 if(err){
                     console.log("Error in post route Biketrail Comment at create comment: ",err);
+                    req.flash("error",err);
                     res.redirect("/biketrails");
                 } else {
                     foundBiketrail.comments.push(comment);
                     foundBiketrail.save();
                     console.log("created new comment for biketrail: \n",foundBiketrail.name);
+                    req.flash("success","Successfully created comment!");
                     res.redirect("/biketrails/" + req.params.id);
                 }
 
@@ -49,6 +52,7 @@ router.get("/:comment_id/edit",middleware.checkCommentOwnership,(req,res) => {
     Comment.findById(req.params.comment_id,(err,comment) => {
         if(err){
             console.log("Error in edit comment route",err);
+            req.flash("error",err);
             res.redirect("/biketrails");
         }
         console.log("load comment edit form");
@@ -64,9 +68,11 @@ router.put("/:comment_id",middleware.checkCommentOwnership,(req,res) => {
     Comment.findByIdAndUpdate(req.params.comment_id,updatedComment,(err,comment) => {
         if(err){
             console.log("Error in update comment: ",err);
+            req.flash("error",err);
             res.redirect("/biketrails");
         }
         console.log("Comment updated");
+        req.flash("success","successfully updated comment!");
         res.redirect("/biketrails/"+req.params.id);
     });
 });
@@ -77,21 +83,13 @@ router.delete("/:comment_id",middleware.checkCommentOwnership,(req,res) => {
     Comment.findByIdAndDelete(req.params.comment_id,(err) => {
         if(err){
             console.log("Error in delete comment: ",err);
+            req.flash("error",err);
             res.redirect("/biketrails");
         }
         console.log("Comment deleted");
+        req.flash("success","comment deleted!");
         res.redirect("back");
     });
 })
-
-// middleware to test if user is logged in otherwise he can go to secret page via search line
-// function isLoggedIn(req,res,next){
-//     console.log("isLoggedIn called!");
-//     if(req.isAuthenticated()){
-//         console.log("user " + req.body.username + " is authenicated!")
-//         return next();
-//     }
-//     res.redirect("/login");
-// }
 
 module.exports = router;

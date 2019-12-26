@@ -24,6 +24,7 @@ middleware.checkBiketrailOwnership = (req,res,next) => {
         Biketrail.findById(req.params.id,(err,foundBiketrail) => {
             console.log("Found Biketrail in middleware.checkBiketrailOwnership:",foundBiketrail);
             if(err){
+                req.flash("error","Biketrail not found!");
                 console.log("Error in middleware.checkBiketrailOwnership",err);
             } else {
                 const bikeTrailOwner_id = foundBiketrail.author.id;
@@ -36,6 +37,7 @@ middleware.checkBiketrailOwnership = (req,res,next) => {
                 }
                 else {
                     console.log("You are not the bikeTrailOwner and are not allowed to do that!");
+                    req.flash("error","You don't have permission to do that!");
                     res.redirect("back");
                 }
             }
@@ -53,6 +55,7 @@ middleware.checkCommentOwnership = (req,res,next) => {
         Comment.findById(req.params.comment_id,(err,foundComment) => {
             console.log("Found Commment in middleware.checkCommentOwnership:",foundComment);
             if(err){
+                req.flash("error","Something went wrong when trying to access this comment!");
                 console.log("Error in middleware.checkCommentOwnership",err);
             } else {
                 const commentOwner_id = foundComment.author.id;
@@ -65,6 +68,7 @@ middleware.checkCommentOwnership = (req,res,next) => {
                 }
                 else {
                     console.log("You are not the CommentOwner and are not allowed to do that!");
+                    req.flash("error","You don't have permission to do that!");
                     res.redirect("back");
                 }
             }

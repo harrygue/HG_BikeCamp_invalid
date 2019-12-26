@@ -34,6 +34,7 @@ router.post("/",middleware.isLoggedIn,(req,res) => {
             console.log(err);
         } else {
             console.log(newlyCreated);
+            req.flash("success","Successfully created new biketrail: " + newBiketrail.name);
             res.redirect("/biketrails");
         }
     });
@@ -75,9 +76,11 @@ router.put("/:id",middleware.checkBiketrailOwnership,(req,res) => {
     Biketrail.findByIdAndUpdate(req.params.id,updatedBiketrail,(err,biketrail) => {
         if(err){
             console.log("Error in edit Biketrail: ",err);
+            req.flash("error",err);
             res.redirect("/biketrails");
         } else {
             console.log(`req.body.id: ${req.body.id}, req.params.id: ${req.params.id}`);
+            req.flash("success","Successfully updated biketrail: " +updatedBiketrail);
             res.redirect("/biketrails/"+req.params.id);
         }
     });
@@ -104,9 +107,11 @@ router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
                     Image.deleteMany({_id: { $in: biketrail.images}},(err) =>{
                         if(err){
                             console.log("Error in Image.deleteMany: ",err);
+                            req.flash("error",err);
                             res.redirect("/biketrails");
                         } else {
                             console.log("Biketrail images deleted!");
+                            req.flash("success","Biketrail and all pertaining comments deleted!");
                             res.redirect("/biketrails")
                         }
                     });
@@ -115,15 +120,5 @@ router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
         }
     });
 });
-
-// middleware to test if user is logged in otherwise he can go to secret page via search line
-// function isLoggedIn(req,res,next){
-//     console.log("isLoggedIn called!");
-//     if(req.isAuthenticated()){
-//         console.log("user " + req.body.username + " is authenicated!")
-//         return next();
-//     }
-//     res.redirect("/login");
-// }
 
 module.exports = router;

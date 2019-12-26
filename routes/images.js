@@ -30,11 +30,13 @@ router.post("/",middleware.checkBiketrailOwnership,(req,res) => {
             Image.create(newImage,(err,image) => {
                 if(err){
                     console.log("Error at creating image: ",err);
+                    req.flash("error","sorry, something went wront, try again or contact system administrator!");
                     res.redirect("/biketrails");
                 } else {
                     foundBiketrail.images.push(image);
                     foundBiketrail.save();
                     console.log("created new image for Biketrail ",foundBiketrail.name);
+                    req.flash("success","Image added");
                     res.redirect("/biketrails/"+req.params.id);
                 }
             }); 
@@ -48,21 +50,13 @@ router.delete("/:image_id",middleware.checkBiketrailOwnership,(req,res) => {
     Image.findByIdAndDelete(req.params.image_id,(err) => {
         if(err){
             console.log("Error in delete image: ",err);
+            req.flash("error","something went wrong");
             res.redirect("/biketrails");
         }
         console.log("Image deleted");
+        req.flash("success","image deleted!");
         res.redirect("back");
     })
 })
-
-// middleware to test if user is logged in otherwise he can go to secret page via search line
-// function isLoggedIn(req,res,next){
-//     console.log("isLoggedIn called!");
-//     if(req.isAuthenticated()){
-//         console.log("user " + req.body.username + " is authenicated!")
-//         return next();
-//     }
-//     res.redirect("/login");
-// }
 
 module.exports = router;

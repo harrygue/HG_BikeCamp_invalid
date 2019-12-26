@@ -1,0 +1,17 @@
+.picture li {
+    background-image: url(https://cdn.pixabay.com/photo/2018/11/09/04/38/biker-3803751__340.jpg);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.form-group {
+    z-index: 1;
+}

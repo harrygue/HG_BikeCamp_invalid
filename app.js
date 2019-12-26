@@ -12,6 +12,7 @@ const User = require("./models/user");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
+const flash = require("connect-flash");
 
 // connect do DB
 mongoose.connect("mongodb://localhost/bike_camp",{useNewUrlParser:true,useUnifiedTopology: true});
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.set("view engine","ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
+app.use(flash());
 
 const biketrailRoutes = require("./routes/biketrails");
 const commentRoutes = require("./routes/comments");
@@ -46,6 +48,8 @@ passport.deserializeUser(User.deserializeUser());
 // need to be placed after all passport ingestions
 app.use(function(req,res,next){
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     next();
 });
 
