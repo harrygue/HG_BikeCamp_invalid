@@ -12,7 +12,7 @@ div class="container">
         <div class="col-md-9">
             <div class="thumbnail">
                 <% biketrail.images.map((image) => { %>
-                    <img class="image-responsive" src = '<%= image.url %>' alt="">
+                    <img class="image-responsive" src = '<%= image.image %>' alt="">
                     <p><%= image.location%></p>
                     <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
                         <form style="margin: 3px;" action="/biketrails/<%=biketrail._id%>/images/<%=image._id%>/?_method=DELETE" method="post">
