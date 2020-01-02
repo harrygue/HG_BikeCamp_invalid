@@ -57,7 +57,8 @@ router.get("/new",middleware.isLoggedIn,(req,res) => {
 router.get("/:id",(req,res) => {
     Biketrail.findById(req.params.id).populate("comments").populate("images").exec((err,foundBiketrail) => {
         if(err){
-            console.log("Error at show: ",err);
+            req.flash("error",err.message);
+            console.log("Error at show: ",err.message);
         } else {
             console.log(foundBiketrail);
             if(req.isAuthenticated()){
@@ -84,11 +85,11 @@ router.put("/:id",middleware.checkBiketrailOwnership,(req,res) => {
     Biketrail.findByIdAndUpdate(req.params.id,updatedBiketrail,(err,biketrail) => {
         if(err){
             console.log("Error in edit Biketrail: ",err);
-            req.flash("error",err);
+            req.flash("error",err.message);
             res.redirect("/biketrails");
         } else {
             console.log(`req.body.id: ${req.body.id}, req.params.id: ${req.params.id}`);
-            req.flash("success","Successfully updated biketrail: " +updatedBiketrail);
+            req.flash("success","Successfully updated biketrail: " +updatedBiketrail.name);
             res.redirect("/biketrails/"+req.params.id);
         }
     });
@@ -100,6 +101,7 @@ router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
     Biketrail.findByIdAndDelete(req.params.id,(err,biketrail) => {
         if(err){
             console.log("Error in delete Biketrail: ",err);
+            req.flash("error",err.message);
             res.redirect("/biketrails");
         } else {
             const _id = req.params.id;
@@ -109,6 +111,7 @@ router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
             Comment.deleteMany({_id: { $in: biketrail.comments}}, (err) =>{
                 if(err){
                     console.log("Error in Comment.deleteMany: ",err);
+                    req.flash("error",err.message);
                     res.redirect("/biketrails");
                 } else {
                     console.log("Biketrail comments deleted!");
