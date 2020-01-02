@@ -27,15 +27,31 @@
                     <p>created by: <%= biketrail.author.userName%></p>
                     <!-- add author later -->
                     <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
-                        <!--
-                        <h1>user_id: <%=user_id%></h1>
-                        <h1>biketrail.author.id: <%=biketrail.author.id%></h1>
-                        -->
                         <a class="btn btn-sm btn-success text-left"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images/new">Add New Image</a>
                         <a class="btn btn-warning btn-sm" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/edit">Edit Biketrail</a>
-                        <form style="display: inline;" action="/biketrails/<%= biketrail._id%>/?_method=DELETE" method="POST">
-                            <button class="btn btn-danger btn-sm">Delete Biketrail</button>
-                        </form>
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm_delete_biketrail">Delete</button>
+                        <!-- Modal -->
+                        <div id="confirm_delete_biketrail" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal Content -->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Do you really want to delete this asset?</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>The content of this asset will be completely deleted, please confirm!</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form style="display: inline;" action="/biketrails/<%= biketrail._id%>/?_method=DELETE" method="POST">
+                                            <button class="btn btn-danger btn-sm">Confirm Delete Biketrail</button>
+                                        </form>
+                                        <button class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     <% } %>
                 </div>
             </div>
@@ -55,9 +71,29 @@
                             <p></p>
                             <% if(user_id !== undefined && comment.author.id.equals(user_id)){ %>
                                 <a class="btn btn-warning" href="/biketrails/<%= biketrail._id%>/comments/<%= comment._id%>/edit">Edit</a>
-                                <form style="display: inline;" action="/biketrails/<%= biketrail._id%>/comments/<%=comment._id%>/?_method=DELETE" method="post">
-                                    <button class="btn btn-danger">Delete Comment</button>
-                                </form>
+
+                                <!-- Wrap delete into modal -->
+                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_comment">Delete</button>
+                                <div id="confirm_delete_comment" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button class="close" data-dismiss="modal">&times;</button>        
+                                                <h4 class="modal-title">Do you really want to delete this asset?</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>The content of this asset will be completely deleted, please confirm!</p>
+                                            </div> 
+                                            <div class="modal-footer">
+                                                <form style="display: inline;" action="/biketrails/<%= biketrail._id%>/comments/<%=comment._id%>/?_method=DELETE" method="post">
+                                                    <button class="btn btn-danger">Confirm Delete Comment</button>
+                                                </form>
+                                                <button class="btn btn-default btn-xs" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             <% } %>
                         </div>
                     </div>

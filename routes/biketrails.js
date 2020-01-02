@@ -119,6 +119,11 @@ router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
                     let i=0;
                     const len = biketrail.images.length;
                     console.log("number of images: ",len);
+                    if(len ===0){
+                        console.log("all images deleted!");
+                        req.flash("success","all images deleted!");
+                        res.redirect("/biketrails");
+                    }
                     biketrail.images.map((image) => {
                         console.log("image inside biketrail delete: ",image);
                         Image.findByIdAndDelete(image,(err,foundImage) => {
