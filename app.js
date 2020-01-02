@@ -17,7 +17,7 @@ const flash = require("connect-flash");
 // connect do DB
 const connectionString = process.env.DATABASEURL;
 // mongoose.connect("mongodb://localhost/bike_camp",{useNewUrlParser:true,useUnifiedTopology: true});
-mongoose.connect(connectionString || "mongodb://localhost/bike_camp",{
+mongoose.connect(connectionString,{
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     useCreateIndex:true}).then(() => {
