@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const biketrailSchema = new mongoose.Schema({
     name: String,
     description: String,
+    location:String,
+    lat:Number,
+    lng:Number,
     images: [
         {
             type:mongoose.Schema.Types.ObjectId,

@@ -1,3 +1,6 @@
+require('dotenv').config();
+// const ejsLint = require('ejs-lint');
+
 const express = require("express");
 const app = express();
 const request = require('request');

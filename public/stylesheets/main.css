@@ -12,3 +12,8 @@
     padding: 9px;
 }
 
+/* Google Maps */
+#map {
+    height: 400px;
+    width: 100%;
+}

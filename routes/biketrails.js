@@ -6,6 +6,17 @@ const Comment = require("../models/comment");
 const Image = require("../models/image");
 const middleware = require("../middleware/index");
 
+var NodeGeocoder = require('node-geocoder');
+ 
+var options = {
+  provider: 'google',
+  httpAdapter: 'https',
+  apiKey: process.env.GEOCODER_API_KEY,
+  formatter: null
+};
+ 
+var geocoder = NodeGeocoder(options);
+
 // CLOUDINARY CONFIG
 var cloudinary = require('cloudinary');
 cloudinary.config({
@@ -34,17 +45,30 @@ router.post("/",middleware.isLoggedIn,(req,res) => {
     //     name:req.body.name,
     //     description:req.body.description,
     // }
+    
     let newBiketrail = req.body.biketrail;
     newBiketrail.author = {id:req.user._id,userName:req.user.username};
-    // create new biketrail and save to db
-    Biketrail.create(newBiketrail,(err,newlyCreated) => {
-        if(err){
-            console.log(err);
-        } else {
-            console.log(newlyCreated);
-            req.flash("success","Successfully created new biketrail: " + newBiketrail.name);
-            res.redirect("/biketrails");
+    console.log("Location: ",req.body.location);
+    geocoder.geocode(req.body.location,(err,data) => {
+        if(err || !data.length){
+            console.log("Error in create Biketrail: ",err.message);
+            req.flash("error","Invalid address!");
+            return res.redirect("back");
         }
+        newBiketrail.lat = data[0].latitude;
+        newBiketrail.lng = data[0].longitude;
+        newBiketrail.location = data[0].formattedAddress;
+        
+        // create new biketrail and save to db
+        Biketrail.create(newBiketrail,(err,newlyCreated) => {
+            if(err){
+                console.log(err);
+            } else {
+                console.log(newlyCreated);
+                req.flash("success","Successfully created new biketrail: " + newBiketrail.name);
+                res.redirect("/biketrails");
+            }
+        });
     });
 });
 
@@ -55,16 +79,19 @@ router.get("/new",middleware.isLoggedIn,(req,res) => {
 
 // SHOW Biketrail form
 router.get("/:id",(req,res) => {
+    let user_id = undefined;
     Biketrail.findById(req.params.id).populate("comments").populate("images").exec((err,foundBiketrail) => {
         if(err){
             req.flash("error",err.message);
             console.log("Error at show: ",err.message);
         } else {
-            console.log(foundBiketrail);
+            console.log("Inside Show Route: ",foundBiketrail);
             if(req.isAuthenticated()){
-                res.render("biketrails/show",{biketrail:foundBiketrail,user_id:req.user._id});
+                console.log("is Authenticated !");
+                // res.render("biketrails/show",{biketrail:foundBiketrail,user_id:req.user._id});
+                user_id = req.user._id;
             }
-            res.render("biketrails/show",{biketrail:foundBiketrail,user_id:undefined});
+            res.render("biketrails/show",{biketrail:foundBiketrail,user_id:user_id});
         }
     });
 });
@@ -82,16 +109,26 @@ router.get("/:id/edit",middleware.checkBiketrailOwnership,(req,res) => {
 router.put("/:id",middleware.checkBiketrailOwnership,(req,res) => {
     let updatedBiketrail = req.body.biketrail;
     console.log(updatedBiketrail);
-    Biketrail.findByIdAndUpdate(req.params.id,updatedBiketrail,(err,biketrail) => {
-        if(err){
-            console.log("Error in edit Biketrail: ",err);
-            req.flash("error",err.message);
-            res.redirect("/biketrails");
-        } else {
-            console.log(`req.body.id: ${req.body.id}, req.params.id: ${req.params.id}`);
-            req.flash("success","Successfully updated biketrail: " +updatedBiketrail.name);
-            res.redirect("/biketrails/"+req.params.id);
+    geocoder.geocode(req.body.location,(err,data) => {
+        if(err || !data.length){
+            req.flash("error","Invalid address!");
+            return res.redirect("back");
         }
+        updatedBiketrail.lat = data[0].latitude;
+        updatedBiketrail.lng = data[0].longitude;
+        updatedBiketrail.location = data[0].formattedAddress;
+
+        Biketrail.findByIdAndUpdate(req.params.id,updatedBiketrail,(err,biketrail) => {
+            if(err){
+                console.log("Error in edit Biketrail: ",err);
+                req.flash("error",err.message);
+                res.redirect("/biketrails");
+            } else {
+                console.log(`req.body.id: ${req.body.id}, req.params.id: ${req.params.id}`);
+                req.flash("success","Successfully updated biketrail: " +updatedBiketrail.name);
+                res.redirect("/biketrails/"+req.params.id);
+            }
+        });
     });
 });
 
