@@ -13,35 +13,71 @@
         </div>
         <div class="col-md-9">
             <div class="thumbnail">
-                <% biketrail.images.map((image) => { %>
-                    <img class="image-responsive" src = '<%= image.image %>' alt="">
-                    <p><%= image.location%></p>
-                    <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
-                        <!-- Wrap delete into modal -->
-                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_image">
-                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                </button>
-                                <div id="confirm_delete_image" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button class="close" data-dismiss="modal">&times;</button>        
-                                                <h4 class="modal-title">Do you really want to delete this asset?</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>The content of this asset will be completely deleted, please confirm!</p>
-                                            </div> 
-                                            <div class="modal-footer">
-                                                <form style="margin: 3px; display: inline;" action="/biketrails/<%=biketrail._id%>/images/<%=image._id%>/?_method=DELETE" method="post">
-                                                    <button class="btn btn-xs btn-danger">Confirm delete</button>
-                                                </form>
-                                                <button class="btn btn-default btn-xs" data-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
+                <div class="container">
+                    <div id="showCarousel" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#showCarousel" data-slide-to="0" class="active"></li>
+                            <% for(let i=1;i<biketrail.images.length;i++){ %>
+                                <li data-target="#showCarousel" data-slide-to="<%= i %>"></li>
+                            <% } %>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner">
+                            <% biketrail.images.map((image,index) => { %>
+                                <!-- first image is active -->
+
+                                <div class="<%= index===0 ? 'item active':'item'%>">
+                                    <img class="image-responsive" src = '<%= image.image %>' alt="<%= image.location%>">
+                                    <div class="carousel-caption">
+                                        <h3><%= image.location%></h3>
                                     </div>
+                                    <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
+                                        <!-- Wrap delete into modal -->
+                                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_image">
+                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                                </button>
+                                                <div id="confirm_delete_image" class="modal fade" role="dialog">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button class="close" data-dismiss="modal">&times;</button>        
+                                                                <h4 class="modal-title">Do you really want to delete this asset?</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>The content of this asset will be completely deleted, please confirm!</p>
+                                                            </div> 
+                                                            <div class="modal-footer">
+                                                                <form style="margin: 3px; display: inline;" action="/biketrails/<%=biketrail._id%>/images/<%=image._id%>/?_method=DELETE" method="post">
+                                                                    <button class="btn btn-xs btn-danger">Confirm delete</button>
+                                                                </form>
+                                                                <button class="btn btn-default btn-xs" data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <% } %>
                                 </div>
-                    <% } %>
-                <% })%>
+
+                            <% })%>
+                            <!-- End of image map -->
+                        </div>
+                        <!-- End of carousel-inner -->
+                        <!-- Left and Right Controls -->
+                        <a class="left carousel-control" href="#showCarousel" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#showCarousel" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    <!-- End of showCarousel -->
+                </div>
+
+
                 <div class="caption-full">
                     <h4 class="pull-right">Placeholder for content</h4>
                     <h4><a href=""><%= biketrail.name%></a></h4>
@@ -165,6 +201,7 @@
     }
   </script>
   <script async defer src="<%= process.env.GEOCODER_CONNECTION %>"></script>
+  
 
 <a class="btn btn-xs btn-info" href="/biketrails">Back</a>
 <%- include ("../partials/footer") %>
