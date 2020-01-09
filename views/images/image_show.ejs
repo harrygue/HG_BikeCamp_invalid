@@ -10,12 +10,12 @@
                     <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
                         <!--edit/update not used at the moment, comment out-->
                         <a class="btn btn-warning btn-xs" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/images/<%= image._id %>/edit">
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Update Title</span>
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Title</span>
                         </a>
 
                         <!-- Wrap delete into modal -->
                             <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_image">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"> Delete Image</span>
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"> Img</span>
                             </button>
                             <div id="confirm_delete_image" class="modal fade" role="dialog">
                                 <div class="modal-dialog">

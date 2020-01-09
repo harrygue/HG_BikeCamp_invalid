@@ -60,16 +60,16 @@
                     <!-- add author later -->
                     <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
                         <a class="btn btn-success btn-xs"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images/new">
-                            <span class="glyphicon glyphicon-camera" aria-hidden="true"> Add image</span>
+                            <span class="glyphicon glyphicon-camera" aria-hidden="true"> Add img</span>
                         </a>
                         <a class="btn btn-warning btn-xs"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images">
-                            <span class="glyphicon glyphicon-camera" aria-hidden="true"> Delete image / update title</span>
+                            <span class="glyphicon glyphicon-camera" aria-hidden="true"> Del / upd img</span>
                         </a>
                         <a class="btn btn-warning btn-xs" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/edit">
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Update Biketrail</span>
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Trail</span>
                         </a>
                         <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_biketrail">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"> Delete Biketrail</span>
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"> Trail</span>
                         </button>
                         <!-- Modal -->
                         <div id="confirm_delete_biketrail" class="modal fade" role="dialog">
@@ -114,12 +114,12 @@
                             <p></p>
                             <% if(user_id !== undefined && comment.author.id.equals(user_id)){ %>
                                 <a class="btn btn-warning btn-xs" href="/biketrails/<%= biketrail._id%>/comments/<%= comment._id%>/edit">
-                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Update Comment</span>
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Comment</span>
                                 </a>
 
                                 <!-- Wrap delete into modal -->
                                 <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_comment">
-                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"> Delete Comment</span>
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"> Comment</span>
                                 </button>
                                 <div id="confirm_delete_comment" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
