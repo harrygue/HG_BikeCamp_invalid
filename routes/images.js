@@ -71,6 +71,56 @@ router.post("/",middleware.checkBiketrailOwnership,upload.single('image'),(req,r
         });
     });
 });
+// Show Images
+router.get("/",middleware.checkBiketrailOwnership,(req,res) => {
+    console.log("hit Show images route");
+    // don't forget populate("images").exec otherwise pictures are not displayed in ejs view !!!
+    Biketrail.findById(req.params.id).populate("images").exec((err,foundBiketrail) => {
+        console.log("found Biketrail: ",foundBiketrail);
+        if(err){
+            console.log("Error",err.message);
+            req.flash("error",err.message);
+        }
+        if(req.isAuthenticated()){
+            console.log("is Authenticated !");
+            user_id = req.user._id;
+        }
+        return res.render("images/image_show",{biketrail:foundBiketrail, user_id:user_id});
+    });
+});
+
+// Edit Images - not used for the moment
+router.get("/:image_id/edit",middleware.checkBiketrailOwnership,(req,res) => {
+    console.log("hit images/edit route!!!");
+    console.log(req.params.id);
+    console.log(req.params.image_id);
+    Image.findById(req.params.image_id,(err,image) => {
+        if(err){
+            console.log("Error in edit image route",err);
+            req.flash("error",err.message);
+            res.redirect("/biketrails");
+        }
+        console.log("load image edit form");
+        console.log("update image: ",image);
+        res.render("images/edit",{image:image, biketrail_id:req.params.id});
+    });
+});
+
+// Update image location
+router.put("/:image_id",middleware.checkBiketrailOwnership,(req,res) => {
+    console.log("hit update route");
+     let updatedImage = req.body.image;
+    Image.findByIdAndUpdate(req.params.image_id,updatedImage,(err,image) => {
+        if(err){
+            console.log("Error in update image: ",err);
+            req.flash("error",err);
+            res.redirect("/biketrails");
+        }
+        console.log("Image Title updated");
+        req.flash("success","successfully updated Image Title!");
+        res.redirect("/biketrails/"+req.params.id);
+    });
+});
 
 // Destroy Image
 router.delete("/:image_id",middleware.checkBiketrailOwnership,(req,res) => {
