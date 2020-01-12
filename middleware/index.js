@@ -29,9 +29,10 @@ middleware.checkBiketrailOwnership = (req,res,next) => {
             } else {
                 const bikeTrailOwner_id = foundBiketrail.author.id;
                 const user_id = req.user._id;
+                const currentUser = req.user;
                 console.log("biketrailOwner_id: ",bikeTrailOwner_id);
                 console.log("user_id: ",user_id);
-                if(bikeTrailOwner_id !== undefined && bikeTrailOwner_id.equals(user_id)){
+                if(bikeTrailOwner_id !== undefined && bikeTrailOwner_id.equals(user_id) || currentUser && currentUser.isAdmin){
                     console.log("Biketrail Owner okay!");
                     next();
                 }
@@ -60,9 +61,10 @@ middleware.checkCommentOwnership = (req,res,next) => {
             } else {
                 const commentOwner_id = foundComment.author.id;
                 const user_id = req.user._id;
+                const currentUser = req.user;
                 console.log("commentOwner_id: ",commentOwner_id);
                 console.log("user_id: ",user_id);
-                if(commentOwner_id !== undefined && commentOwner_id.equals(user_id)){
+                if(commentOwner_id !== undefined && commentOwner_id.equals(user_id) || currentUser && currentUser.isAdmin){
                     console.log("Comment Owner okay!");
                     next();
                 }

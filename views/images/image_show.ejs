@@ -7,7 +7,7 @@
                 <div class="thumbnail">
                     <img src = '<%= image.image %>' alt="<%= image.location%>" style="min-height:50%;height:50%;">
                     <h5><%= image.location%></h5>
-                    <% if(user_id !== undefined && biketrail.author.id.equals(user_id)){ %>
+                    <% if(user_id && biketrail.author.id.equals(user_id) || currentUser && currentUser.isAdmin){ %>
                         <!--edit/update not used at the moment, comment out-->
                         <a class="btn btn-warning btn-xs" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/images/<%= image._id %>/edit">
                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Title</span>
