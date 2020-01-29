@@ -16,6 +16,8 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const flash = require("connect-flash");
+const helper = require("./public/helperFunctions");
+
 
 // connect do DB
 const connectionString = process.env.DATABASEURL;
@@ -39,7 +41,9 @@ const biketrailRoutes = require("./routes/biketrails");
 const commentRoutes = require("./routes/comments");
 const imageRoutes = require("./routes/images");
 const indexRoutes = require("./routes/index");
-      
+
+// for time in show view
+app.locals.moment = require('moment');
 
 // ------PASSPORT CONFIGURATION ---------
 
@@ -62,6 +66,7 @@ app.use(function(req,res,next){
     res.locals.currentUser = req.user;
     res.locals.error = req.flash("error");
     res.locals.success = req.flash("success");
+    res.locals.helper = helper;
     next();
 });
 

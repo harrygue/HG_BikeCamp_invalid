@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+//const moment = require("moment");
 
 // Schema Setup
 const biketrailSchema = new mongoose.Schema({
@@ -7,6 +8,7 @@ const biketrailSchema = new mongoose.Schema({
     location:String,
     lat:Number,
     lng:Number,
+    createdAt: {type:Date,default: Date.now()},
     images: [
         {
             type:mongoose.Schema.Types.ObjectId,

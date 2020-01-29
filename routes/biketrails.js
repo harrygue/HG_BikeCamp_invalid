@@ -5,6 +5,8 @@ const Biketrail = require("../models/biketrail");
 const Comment = require("../models/comment");
 const Image = require("../models/image");
 const middleware = require("../middleware/index");
+// const moment = require("moment");
+// const helper = require("../public/helperFunctions"); // added to app.locals
 
 var NodeGeocoder = require('node-geocoder');
  
@@ -80,10 +82,11 @@ router.get("/new",middleware.isLoggedIn,(req,res) => {
 // SHOW Biketrail form
 router.get("/:id",(req,res) => {
     let user_id = undefined;
+
     Biketrail.findById(req.params.id).populate("comments").populate("images").exec((err,foundBiketrail) => {
         if(err){
             req.flash("error",err.message);
-            console.log("Error at show: ",err.message);
+             console.log("Error at show route: ",err.message);
         } else {
             console.log("Inside Show Route: ",foundBiketrail);
             if(req.isAuthenticated()){
@@ -91,6 +94,7 @@ router.get("/:id",(req,res) => {
                 // res.render("biketrails/show",{biketrail:foundBiketrail,user_id:req.user._id});
                 user_id = req.user._id;
             }
+            // let dateDiff = helper.timeDiff(foundBiketrail.createdAt,Date.now());
             res.render("biketrails/show",{biketrail:foundBiketrail,user_id:user_id});
         }
     });
@@ -201,5 +205,20 @@ router.delete("/:id",middleware.checkBiketrailOwnership,(req,res) => {
         }
     });
 });
+
+//let timeDiff = (date1, date2) => {
+//    let result = "";
+//    let delta = Math.abs(date2 - date1)/1000 // time in seconds
+//    if(delta<60){
+//        result = Math.round(delta) + " seconds ago";
+//    } else if (delta >= 60 && delta < 3600){
+//        result = Math.round(delta/60) + " minutes ago";
+//    } else if (delta <= 3600 && delta < 3600*24){
+//        result = Math.round(delta/3600) + " hours ago";
+//    } else {
+//        result = Math.round(delta/(3600*24)) + " days ago";
+//    }
+//    return result;
+//}
 
 module.exports = router;

@@ -1,4 +1,30 @@
 <%- include ("../partials/header") %>
+
+<!--<script src="moment.js"></script>-->
+<style>
+    html, body {
+      height: 370px;
+      padding: 0;
+      margin: 0;
+      }
+    #map {
+     height: 360px;
+     width: 300px;
+     overflow: hidden;
+     float: left;
+     border: thin solid #333;
+     }
+    #capture {
+     height: 360px;
+     width: 480px;
+     overflow: hidden;
+     float: left;
+     background-color: #ECECFB;
+     border: thin solid #333;
+     border-left: none;
+     }
+  </style>
+
 <div class="container">
     <div class="row">
         <div class="col-md-3">
@@ -8,7 +34,7 @@
                 <li class="list-group-item">Info 2</li>
                 <li class="list-group-item">Info 3</li>
             </div>
-
+            <div id="capture"></div>
             <div id="map"></div>
         </div>
         <div class="col-md-9">
@@ -56,7 +82,7 @@
                     <h4 class="pull-right">Placeholder for content</h4>
                     <h4><a href=""><%= biketrail.name%></a></h4>
                     <p><%= biketrail.description%></p>
-                    <p>created by: <%= biketrail.author.userName%></p>
+                    <p>created by: <%= biketrail.author.userName%>, <%= helper.timeDiff(biketrail.createdAt,Date.now())%></p>
                     <!-- add author later -->
                     <% if(user_id && biketrail.author.id.equals(user_id) || currentUser && currentUser.isAdmin){ %>
                         <a class="btn btn-success btn-xs"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images/new">
@@ -109,7 +135,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <strong><%= comment.author.userName%></strong>
-                            <span class="pull-right">10 days ago</span>
+                            <span class="pull-right"><%= helper.timeDiff(comment.createdAt,Date.now())%></span>
                             <p><%=comment.text%></p>
                             <p></p>
                             <% if(user_id && comment.author.id.equals(user_id) || currentUser && currentUser.isAdmin){ %>
@@ -175,9 +201,21 @@
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
+      var src = "https://res.cloudinary.com/dlxmy2ytu/raw/upload/v1580331206/Belli_Bike_oejbou.kml";
+      var kmlLayer = new google.maps.KmlLayer(src, {
+        suppressInfoWindows: true,
+        preserveViewport: false,
+        map: map
+      });
+      kmlLayer.addListener('doubleclick', function(event) {
+        var content = event.featureData.infoWindowHtml;
+        var testimonial = document.getElementById('capture');
+        testimonial.innerHTML = content;
+      });
     }
   </script>
   <script async defer src="<%= process.env.GEOCODER_CONNECTION %>"></script>
+
   
 
 <a class="btn btn-xs btn-info" href="/biketrails">Back</a>

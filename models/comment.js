@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+//const moment = require("moment");
 
 let commentSchema = new mongoose.Schema({
     text: String,
@@ -9,7 +10,8 @@ let commentSchema = new mongoose.Schema({
             ref: "User"
         },
         userName: String
-    }
+    },
+    createdAt:{type:Date,default: Date.now()}
 });
 
 module.exports = mongoose.model("Comment",commentSchema);

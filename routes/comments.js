@@ -4,6 +4,7 @@ const passport = require("passport");
 const Biketrail = require("../models/biketrail");
 const Comment = require("../models/comment");
 const middleware = require("../middleware");
+const moment = require("moment");
 
 // Comments - New Form
 
@@ -13,13 +14,14 @@ router.get("/new",middleware.isLoggedIn,(req,res) => {
             console.log("Error at new comments:",err);
             req.flash("error",err);
         } else {
-            res.render("comments/new",{biketrail:biketrail});
+            res.render("comments/new",{biketrail:biketrail,});
         }
     });
 });
 
 router.post("/",middleware.isLoggedIn,(req,res) => {
     let newComment = req.body.comment;
+    newComment.creation_date = moment().format();
     newComment.author = {id:req.user._id,userName:req.user.username};
     Biketrail.findById(req.params.id,(err,foundBiketrail) => {
         if(err){
