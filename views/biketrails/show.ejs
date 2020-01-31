@@ -2,28 +2,8 @@
 
 <!--<script src="moment.js"></script>-->
 <style>
-    html, body {
-      height: 370px;
-      padding: 0;
-      margin: 0;
-      }
-    #map {
-     height: 360px;
-     width: 300px;
-     overflow: hidden;
-     float: left;
-     border: thin solid #333;
-     }
-    #capture {
-     height: 360px;
-     width: 480px;
-     overflow: hidden;
-     float: left;
-     background-color: #ECECFB;
-     border: thin solid #333;
-     border-left: none;
-     }
-  </style>
+
+</style>
 
 <div class="container">
     <div class="row">
@@ -201,7 +181,8 @@
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
-      var src = "https://res.cloudinary.com/dlxmy2ytu/raw/upload/v1580331206/Belli_Bike_oejbou.kml";
+
+      var src = "<%= biketrail.kml_url %>";
       var kmlLayer = new google.maps.KmlLayer(src, {
         suppressInfoWindows: true,
         preserveViewport: false,

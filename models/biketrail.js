@@ -8,6 +8,8 @@ const biketrailSchema = new mongoose.Schema({
     location:String,
     lat:Number,
     lng:Number,
+    kml_url:String,
+    kml_id:String,
     createdAt: {type:Date,default: Date.now()},
     images: [
         {
@@ -27,7 +29,8 @@ const biketrailSchema = new mongoose.Schema({
             ref: "User"
         },
         userName: String
-    }
+    },
+    
 });
 
 module.exports = mongoose.model("Biketrail",biketrailSchema);
