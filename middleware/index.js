@@ -22,7 +22,7 @@ middleware.checkBiketrailOwnership = (req,res,next) => {
     // console.log("Show req object:",req);
     if(req.isAuthenticated()){
         Biketrail.findById(req.params.id,(err,foundBiketrail) => {
-            console.log("Found Biketrail in middleware.checkBiketrailOwnership:",foundBiketrail);
+            // console.log("Found Biketrail in middleware.checkBiketrailOwnership:",foundBiketrail);
             if(err){
                 req.flash("error","Biketrail not found!");
                 console.log("Error in middleware.checkBiketrailOwnership",err);
@@ -54,7 +54,7 @@ middleware.checkCommentOwnership = (req,res,next) => {
     // console.log("Show req object:",req);
     if(req.isAuthenticated()){
         Comment.findById(req.params.comment_id,(err,foundComment) => {
-            console.log("Found Commment in middleware.checkCommentOwnership:",foundComment);
+            // console.log("Found Commment in middleware.checkCommentOwnership:",foundComment);
             if(err){
                 req.flash("error","Something went wrong when trying to access this comment!");
                 console.log("Error in middleware.checkCommentOwnership",err);

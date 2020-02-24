@@ -10,6 +10,8 @@ const biketrailSchema = new mongoose.Schema({
     lng:Number,
     kml_url:String,
     kml_id:String,
+    gpxFile:String,
+    gpxFileName:String,
     createdAt: {type:Date,default: Date.now()},
     images: [
         {

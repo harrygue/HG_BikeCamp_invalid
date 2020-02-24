@@ -11,6 +11,7 @@
   "author": "Harald",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/togeojson": "^0.16.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.18.1",
     "connect-flash": "^0.1.1",
@@ -19,6 +20,9 @@
     "ejs-lint": "^0.3.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
+    "fs": "0.0.1-security",
+    "fs-extra": "^8.1.0",
+    "haversine-distance": "^1.1.6",
     "locus": "^2.0.4",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
@@ -28,7 +32,10 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^5.0.1",
+    "path": "^0.12.7",
     "request": "^2.88.0",
-    "save": "^2.4.0"
+    "save": "^2.4.0",
+    "xml2js": "^0.4.23",
+    "xmldom": "^0.2.1"
   }
 }

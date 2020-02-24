@@ -14,35 +14,39 @@
                         </a>
 
                         <!-- Wrap delete into modal -->
-                            <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_image">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"> Img</span>
-                            </button>
-                            <div id="confirm_delete_image" class="modal fade" role="dialog">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button class="close" data-dismiss="modal">&times;</button>        
-                                            <h4 class="modal-title">Do you really want to delete this asset?</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>The content of this asset will be completely deleted, please confirm!</p>
-                                        </div> 
-                                        <div class="modal-footer">
-                                            <form style="margin: 3px; display: inline;" action="/biketrails/<%=biketrail._id%>/images/<%=image._id%>/?_method=DELETE" method="post">
-                                                <button class="btn btn-xs btn-danger">Confirm delete</button>
-                                            </form>
-                                            <button class="btn btn-default btn-xs" data-dismiss="modal">Close</button>
-                                        </div>
+                        <!-- data-target and id must be individual otherwise the modal sends always the image id of the first image to the delete route -->
+                        <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_image<%= image._id %>">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"> Img</span>
+                        </button>
+                        <div id="confirm_delete_image<%= image._id %>" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button class="close" data-dismiss="modal" onclick="print(image._id)">&times;</button>        
+                                        <h4 class="modal-title">Do you really want to delete this asset?</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>The content of this asset will be completely deleted, please confirm!</p>
+                                    </div> 
+                                    <div class="modal-footer">
+                                        <form style="margin: 3px; display: inline;" action="/biketrails/<%=biketrail._id%>/images/<%=image._id%>/?_method=DELETE" method="post">
+                                            <button class="btn btn-xs btn-danger">Confirm delete</button>
+                                        </form>
+                                        <button class="btn btn-default btn-xs" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     <% } %>   
-
                 </div>
             </div>
         <% })%>
     </div>
-    <a class="btn btn-xs btn-info" href="/biketrails/<%=biketrail._id%>>">Back</a>
+    <a class="btn btn-xs btn-info" href="/biketrails/<%=biketrail._id%>">Back</a>
 </div>
-
+<script>
+    function print(str){
+        console.log("within image delete modal: ",str);
+    }
+</script>
 <%- include ("../partials/footer") %>

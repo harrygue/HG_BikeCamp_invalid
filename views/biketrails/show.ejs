@@ -1,23 +1,29 @@
 <%- include ("../partials/header") %>
+<style>
+    #mapid { height: 30rem; }
+</style>
 
 <!--<script src="moment.js"></script>-->
-<style>
-
-</style>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3">
-            <p class="lead">Bike Trails</p>
+        <div class="col-md-4">
+            <h4 class="lead">Key Data</h4>
             <div class="list-group">
-                <li class="list-group-item">Info 1</li>
-                <li class="list-group-item">Info 2</li>
-                <li class="list-group-item">Info 3</li>
+                <li class="list-group-item">Total Distance: <%= totalDist/1000 %> km</li>
+                <li class="list-group-item">Elevations (up/down): <%= alt.pos %> / <%= alt.neg %> (meter)</li>
             </div>
-            <div id="capture"></div>
-            <div id="map"></div>
+            <h4>Map</h4>
+            <div id="mapid"></div>
+            <h4>Elevation</h4>
+            <div id="elevation"></div>
+            <!--<div id="capture"></div>-->
+           <!--
+                <h2>Display Google Map</h2>
+                <div id="map"></div>
+            -->
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <div class="thumbnail">
                 <div class="container">
                     <div id="showCarousel" class="carousel slide" data-ride="carousel">
@@ -124,10 +130,11 @@
                                 </a>
 
                                 <!-- Wrap delete into modal -->
-                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_comment">
+                                <!-- data-target and id must be individual otherwise the modal sends always the image id of the first image to the delete route -->
+                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_comment<%= comment._id%>">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"> Comment</span>
                                 </button>
-                                <div id="confirm_delete_comment" class="modal fade" role="dialog">
+                                <div id="confirm_delete_comment<%= comment._id%>" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -157,47 +164,129 @@
     </div>
 </div>
 <script>
-    function initMap() {
-      var lat = <%= biketrail.lat %>; 
-      var lng = <%= biketrail.lng %>; 
-      var center = {lat: lat, lng: lng };
-      var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 8,
-          center: center,
-          scrollwheel: false
-      });
-      var contentString = `
-        <strong><%= biketrail.name %><br />
-        <%= biketrail.location %></strong>
-        <p><%= biketrail.description %></p>
-      `
-      var infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-      var marker = new google.maps.Marker({
-          position: center,
-          map: map
-      });
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+    // OPEN STREET MAPS AND LEAFLET
+    var lat = <%= biketrail.lat %>; 
+    var lng = <%= biketrail.lng %>;
+    var file = '<%= file %>';
+    console.log(file);
+    if(file != 'unknown'){
+        var mymap = L.map('mapid').setView([lat, lng], 9);
+        mymap.flyTo([lat, lng], 11)
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            tileSize: 256,
+            id: 'mapbox/streets-v11',
+            accessToken: '<%= process.env.MAPBOX_KEY %>'
+        }).addTo(mymap);
 
-      var src = "<%= biketrail.kml_url %>";
-      var kmlLayer = new google.maps.KmlLayer(src, {
-        suppressInfoWindows: true,
-        preserveViewport: false,
-        map: map
-      });
-      kmlLayer.addListener('doubleclick', function(event) {
-        var content = event.featureData.infoWindowHtml;
-        var testimonial = document.getElementById('capture');
-        testimonial.innerHTML = content;
-      });
+        let jsonObj = <%-JSON.stringify(jsonObj)%>;
+        let elevations = [];
+        let coordinates = [];
+
+        // let trkPts = JSON.stringify(jsonObj.gpx.trk[0].trkseg[0].trkpt,null,4); 
+        let trkPts = jsonObj.gpx.trk[0].trkseg[0].trkpt;
+        trkPts.forEach((tp) => {
+            elevations.push(tp.ele[0]);
+            coordinates.push([tp.$.lat,tp.$.lon]);
+        });
+
+
+         // DISPLAY GPX TRACK WITH  geoJSON
+        var geoJSONgpx = <%- JSON.stringify(geoJSONgpx)%>;
+        var myLines = [{
+            "type": "LineString",
+            "coordinates": coordinates
+        }];
+
+        var myStyle = {
+            "color": "#6600ff",
+            "weight": 5,
+            "opacity": 0.65
+        };
+
+         L.geoJSON(geoJSONgpx, {
+            style: myStyle
+        }).addTo(mymap);
+
+        // PLOT ELEVATION INTO LINE CHART WITH PLOTLY
+        let sumDist = <%- JSON.stringify(sumDist) %>;
+
+        let trace1 = {
+            x: sumDist,
+            y: elevations,
+            mode: "lines",
+            name: "Elevation",
+            line: {
+                color: 'rgb(55, 128, 191)',
+                width: 3
+            }
+        };
+
+        data = [trace1];
+
+        var layout = {
+            title:'',
+            xaxis: {
+                title: 'Distance [km]',
+                showgrid: true
+            },
+            yaxis: {
+                title: 'Altitude [m]',
+                showgrid: true,
+                zeroline: true
+            },
+            width: 400,
+            height: 300
+          };
+
+        Plotly.newPlot("elevation",data,layout)
     }
+    
+    // GOOGLE MAPS
+    //function initMap() {
+    //  var lat = <%= biketrail.lat %>; 
+    //  var lng = <%= biketrail.lng %>; 
+    //  var center = {lat: lat, lng: lng };
+    //  var map = new google.maps.Map(document.getElementById('map'), {
+    //      zoom: 8,
+    //      center: center,
+    //      scrollwheel: false
+    //  });
+    //  var contentString = `
+    //    <strong><%= biketrail.name %><br />
+    //    <%= biketrail.location %></strong>
+    //    <p><%= biketrail.description %></p>
+    //  `
+    //  var infowindow = new google.maps.InfoWindow({
+    //    content: contentString
+    //  });
+    //  var marker = new google.maps.Marker({
+    //      position: center,
+    //      map: map
+    //  });
+    //  marker.addListener('click', function() {
+    //    infowindow.open(map, marker);
+    //  });
+//
+    //  var src = "<%= biketrail.kml_url %>";
+    //  var kmlLayer = new google.maps.KmlLayer(src, {
+    //    suppressInfoWindows: true,
+    //    preserveViewport: false,
+    //    map: map
+    //  });
+    //  kmlLayer.addListener('doubleclick', function(event) {
+    //    var content = event.featureData.infoWindowHtml;
+    //    var testimonial = document.getElementById('capture');
+    //    testimonial.innerHTML = content;
+    //  });
+    //}
   </script>
-  <script async defer src="<%= process.env.GEOCODER_CONNECTION %>"></script>
-
+  <!--
+    <script async defer src="<%= process.env.GEOCODER_CONNECTION %>"></script>
+  -->
   
+    
 
 <a class="btn btn-xs btn-info" href="/biketrails">Back</a>
 <%- include ("../partials/footer") %>
