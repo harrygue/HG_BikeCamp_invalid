@@ -12,6 +12,7 @@
             <div class="list-group">
                 <li class="list-group-item">Total Distance: <%= totalDist/1000 %> km</li>
                 <li class="list-group-item">Elevations (up/down): <%= alt.pos %> / <%= alt.neg %> (meter)</li>
+                <li class="list-group-item" id=li3></li>
             </div>
             <h4>Map</h4>
             <div id="mapid"></div>
@@ -171,13 +172,13 @@
     console.log(file);
     if(file != 'unknown'){
         var mymap = L.map('mapid').setView([lat, lng], 9);
-        mymap.flyTo([lat, lng], 11)
+        // mymap.flyTo([lat, lng], 11)
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
             tileSize: 256,
             id: 'mapbox/streets-v11',
-            accessToken: '<%= process.env.MAPBOX_KEY%>'
+            accessToken: '<%= process.env.MAPBOX_KEY2%>'
         }).addTo(mymap);
 
         let jsonObj = <%-JSON.stringify(jsonObj)%>;
@@ -191,8 +192,38 @@
             coordinates.push([tp.$.lat,tp.$.lon]);
         });
 
+        // calculate center of map
+        let lat_min = 100;
+        let lat_max = 0;
+        let lon_min = 100;
+        let lon_max = 0;
+        coordinates.map(x => {
+            lat_min = lat_min < x[0] ? lat_min : x[0]
+            lat_max = lat_max >= x[0] ? lat_max : x[0]
+            lon_min = lon_min < x[1] ? lon_min : x[1]
+            lon_max = lon_max > x[1] ? lon_max : x[1]
+        });
+        let lat_avg = lat_min/2 + lat_max/2;
+        let lon_avg = lon_min/2 + lon_max/2;
+        let lat_dst = lat_max-lat_min;
+        let lon_dst = lon_max-lon_min;
 
-         // DISPLAY GPX TRACK WITH  geoJSON
+
+        console.log(`min_lat: ${lat_min} and max_lat: ${lat_max}`);
+        console.log(`min_lon: ${lon_min} and max_lon: ${lon_max}`);
+        console.log(`avg_lat: ${lat_avg} and avg_lon: ${lon_avg}`);
+        console.log(`dist_lat: ${lat_dst} and dist_lon: ${lon_dst}`);
+        
+        // Adjust zoom lineary depending on lat_dst
+        // y = -7,7742x + 11,92
+        // y = 27,093x2 - 22,766x + 13,033
+
+        // let zoom = 11.92 - lat_dst*7.7742;
+        let zoom = 13.033 - 22.766*lat_dst + 27.093*lat_dst*lat_dst;
+
+        mymap.flyTo([lat_avg, lon_avg], zoom)
+
+        // DISPLAY GPX TRACK WITH  geoJSON
         var geoJSONgpx = <%- JSON.stringify(geoJSONgpx)%>;
         var myLines = [{
             "type": "LineString",
