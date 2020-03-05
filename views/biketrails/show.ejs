@@ -178,7 +178,7 @@
             maxZoom: 18,
             tileSize: 256,
             id: 'mapbox/streets-v11',
-            accessToken: 'pk.eyJ1IjoiaGFycnlndWUiLCJhIjoiY2s2djMxaXBwMGIzNzNlb2F4N3BoZGVkNCJ9.S2pNDGP42YHhdDB19G_8dw'
+            accessToken: '<%= process.env.MAPBOX_KEY2 %>'
         }).addTo(mymap);
 
         let jsonObj = <%-JSON.stringify(jsonObj)%>;
@@ -214,7 +214,7 @@
         console.log(`avg_lat: ${lat_avg} and avg_lon: ${lon_avg}`);
         console.log(`dist_lat: ${lat_dst} and dist_lon: ${lon_dst}`);
         
-        // Adjust zoom lineary depending on lat_dst
+        // Adjust zoom depending on lat_dst with 2nd order function
         // y = -7,7742x + 11,92
         // y = 27,093x2 - 22,766x + 13,033
 
