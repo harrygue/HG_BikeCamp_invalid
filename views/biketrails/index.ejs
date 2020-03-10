@@ -2,11 +2,18 @@
 <div class='container'>
     <header class='jumbotron'>
         <div class="container">
-            <h1>Welcome to Bike Routes!</h1>
-            <p>View our hand picked Bike Routes</p>
-    
+            <h2>Welcome to Awesome Bike Trails!</h2>
+            <!--<p>View our hand picked Bike Routes</p>-->
             <p>
                 <a class="btn btn-primary btn-lg" href="/biketrails/new">Create New Biketrail</a>
+            </p>
+            <p>
+                <form action="/biketrails" method="get" class="form-inline">
+                    <div class="form-group">
+                        <input type="text" name="search" placeholder="Biketrail search..." class="form-control">
+                        <input type="submit" value="search" class="btn btn-md btn-default">
+                    </div>
+                </form>
             </p>
         </div>
     </header>

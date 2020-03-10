@@ -66,11 +66,19 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Index page
+// Index page with fuzzy search
 router.get("/",async(req,res) => {
+    console.log(req.query);
     try {
-        let allBiketrails = await Biketrail.find({}).populate("images").exec();
-        res.render("biketrails/index",{biketrails:allBiketrails});
+        if(req.query.search && req.query.search != ""){
+            const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            let filteredBiketrails = await Biketrail.find({name:regex}).populate("images").exec();
+            res.render("biketrails/index",{biketrails:filteredBiketrails});
+        } else {
+            let allBiketrails = await Biketrail.find({}).populate("images").exec();
+            res.render("biketrails/index",{biketrails:allBiketrails});
+        }
+
     } catch(error) {
         console.log("Error at Index route: ",err.message);
         req.flash("error","ERROR: cannot get biketrails!");
@@ -165,7 +173,7 @@ router.get("/:id",async(req,res) => {
                     }
                 }
                 let alt = {pos:posAlt.toFixed(0),neg:negAlt.toFixed(0)};
-                let totalDistRound = totalDist.toFixed(1);
+                let totalDistRound = parseFloat(totalDist).toFixed(1);
                 res.render("biketrails/show",{biketrail:foundBiketrail,user_id:user_id, sumDist:sumDist, totalDist:totalDistRound, alt:alt,positionAvg:positionAvg,jsonObj:jsonObj, geoJSONgpx:geoJSONgpx,file:fileName});
             });
         } else {
@@ -306,5 +314,10 @@ router.delete("/:id",middleware.checkBiketrailOwnership,async(req,res) => {
         res.redirect("/biketrails");
     }
 });
+
+// https://stackoverflow.com/questions/38421664/fuzzy-searching-with-mongodb
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 
 module.exports = router;

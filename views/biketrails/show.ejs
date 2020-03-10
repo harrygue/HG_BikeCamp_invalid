@@ -8,11 +8,12 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h4 class="lead">Key Data</h4>
+            <h2 ><%= biketrail.name%></h2>
+            <!--<h2 class="lead"><%= biketrail.name%></h2>-->
             <div class="list-group">
-                <li class="list-group-item">Total Distance: <%= totalDist/1000 %> km</li>
+                <li class="list-group-item">Total Distance: <%= (totalDist/1000).toFixed(1) %> km</li>
                 <li class="list-group-item">Elevations (up/down): <%= alt.pos %> / <%= alt.neg %> (meter)</li>
-                <li class="list-group-item" id=li3></li>
+                <li class="list-group-item" id="li3"></li>
             </div>
             <h4>Map</h4>
             <div id="mapid"></div>
@@ -66,7 +67,7 @@
 
 
                 <div class="caption-full">
-                    <h4 class="pull-right">Placeholder for content</h4>
+                    <!--<h4 class="pull-right">Placeholder for content</h4>-->
                     <h4><a href=""><%= biketrail.name%></a></h4>
                     <p><%= biketrail.description%></p>
                     <p>created by: <%= biketrail.author.userName%>, <%= moment(biketrail.createdAt).fromNow()%></p>
@@ -190,6 +191,21 @@
         trkPts.forEach((tp) => {
             elevations.push(tp.ele[0]);
             coordinates.push([tp.$.lat,tp.$.lon]);
+        });
+
+        // get min and max elevation
+        e_min = 10000;
+        e_max = 0;
+        elevations.map(e => {
+            e_min = e < e_min ? e : e_min;
+            e_max = e >= e_max ? e : e_max;
+        });
+        e_min = parseFloat(e_min).toFixed(1);
+        e_max = parseFloat(e_max).toFixed(1);
+        console.log(`Min. / Max. Elevation (m): ${e_min} / ${e_max}`);
+        // document.getElementById("li3").innerText = `Min. / Max. Elevation (m): ${e_min} / ${e_max}`;
+        $(document).ready(function(){
+            $("#li3").text(`Lowest / Highest Elevation: ${e_min} / ${e_max} (meter)`);
         });
 
         // calculate center of map
