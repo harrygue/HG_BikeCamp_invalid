@@ -9,7 +9,7 @@
                     <h5><%= image.location%></h5>
                     <% if(user_id && biketrail.author.id.equals(user_id) || currentUser && currentUser.isAdmin){ %>
                         <!--edit/update not used at the moment, comment out-->
-                        <a class="btn btn-warning btn-xs" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/images/<%= image._id %>/edit">
+                        <a class="btn btn-default btn-xs" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/images/<%= image._id %>/edit">
                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Title</span>
                         </a>
 

@@ -76,12 +76,13 @@
                         <a class="btn btn-success btn-xs"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images/new">
                             <span class="glyphicon glyphicon-camera" aria-hidden="true"> Add img</span>
                         </a>
-                        <a class="btn btn-warning btn-xs"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images">
+                        <a class="btn btn-default btn-xs"  style="margin-bottom: 3px;" href="/biketrails/<%= biketrail._id %>/images">
                             <span class="glyphicon glyphicon-camera" aria-hidden="true"> Del / upd img</span>
                         </a>
-                        <a class="btn btn-warning btn-xs" style="display: inline;"  href="/biketrails/<%= biketrail._id%>/edit">
+                        <a class="btn btn-default btn-xs" href="/biketrails/<%= biketrail._id%>/edit">
                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"> Trail</span>
                         </a>
+                        <!-- style="display: inline;"-->
                         <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm_delete_biketrail">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"> Trail</span>
                         </button>
@@ -106,7 +107,9 @@
                                 </div>
                             </div>
                         </div>
-
+                        <!-- DOWNLOAD BUTTON -->
+                        <!--<div id="gpx3-dl"></div>-->
+                        <button id="gpx3-dl" onclick=gpxDownload() class="btn btn-md btn-info btn-xs">Download GPX Track</button>
                     <% } %>
                 </div>
             </div>
@@ -291,6 +294,16 @@
         Plotly.newPlot("elevation",data,layout)
     }
     
+    // 3rd trial with saveAs() - works also well and saves file directly to download folder
+    function gpxDownload() {
+        let text = <%- JSON.stringify(biketrail.gpxFile) %>; // fileStr
+        var blob = new Blob([text], {
+          type: "text/plain;charset=utf-8"
+        });
+        var filename = '<%= file %>'
+        saveAs(blob, filename);
+      }
+
     // GOOGLE MAPS
     //function initMap() {
     //  var lat = <%= biketrail.lat %>; 

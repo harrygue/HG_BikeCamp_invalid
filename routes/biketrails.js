@@ -174,11 +174,30 @@ router.get("/:id",async(req,res) => {
                 }
                 let alt = {pos:posAlt.toFixed(0),neg:negAlt.toFixed(0)};
                 let totalDistRound = parseFloat(totalDist).toFixed(1);
-                res.render("biketrails/show",{biketrail:foundBiketrail,user_id:user_id, sumDist:sumDist, totalDist:totalDistRound, alt:alt,positionAvg:positionAvg,jsonObj:jsonObj, geoJSONgpx:geoJSONgpx,file:fileName});
+                res.render("biketrails/show",{
+                    biketrail:foundBiketrail,
+                    user_id:user_id, 
+                    sumDist:sumDist,
+                    totalDist:totalDistRound, 
+                    alt:alt,
+                    positionAvg:positionAvg,
+                    jsonObj:jsonObj, 
+                    geoJSONgpx:geoJSONgpx,
+                    file:fileName
+                });
             });
         } else {
             let alt = {pos:"unkown",neg:"unkown"};
-            res.render("biketrails/show",{biketrail:foundBiketrail,user_id:user_id, sumDist:"unkown", totalDist:"unkown", alt:alt,positionAvg:null,jsonObj:null, geoJSONgpx:null,file:"unkown"});
+            res.render("biketrails/show",{
+                biketrail:foundBiketrail,
+                user_id:user_id, 
+                sumDist:"unkown", 
+                totalDist:"unkown", 
+                alt:alt,
+                positionAvg:null,
+                jsonObj:null, 
+                geoJSONgpx:null,
+                file:"unkown"});
         }
 
     } catch (error){

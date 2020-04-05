@@ -138,7 +138,7 @@ router.put("/:image_id",middleware.checkBiketrailOwnership,async(req,res) => {
     try {
         console.log("hit update route");
 
-        let image = Image.findByIdAndUpdate(req.params.image_id,req.body.image);
+        let image = await Image.findByIdAndUpdate(req.params.image_id,req.body.image);
 
         console.log("Image Title updated");
         console.log(req.body.image);
